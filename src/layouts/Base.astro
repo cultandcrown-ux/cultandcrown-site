@@ -1,0 +1,161 @@
+---
+import '../styles/global.css';
+import { SITE, CATEGORIES } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+}
+const { title, description = SITE.description, image = '/og-default.png', type = 'website' } = Astro.props;
+const fullTitle = title ? `${title} | ${SITE.name}` : `${SITE.name} | ${SITE.tagline}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+const path = Astro.url.pathname;
+const nav = [
+  { href: '/articles/', label: 'Articles' },
+  ...Object.entries(CATEGORIES).map(([key, c]) => ({ href: `/category/${key}/`, label: c.label })),
+  { href: '/about/', label: 'About' },
+];
+const year = new Date().getFullYear();
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{fullTitle}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="alternate" type="application/rss+xml" title={SITE.name} href="/rss.xml" />
+  <link rel="sitemap" href="/sitemap-index.xml" />
+  <link rel="preload" href="/fonts/bodoni-moda-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <meta property="og:site_name" content={SITE.name} />
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content={type} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImage} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#004953" />
+</head>
+<body>
+  <div class="topbar">{SITE.tagline}</div>
+  <header class="header">
+    <div class="wrap header__inner">
+      <a href="/" class="wordmark" aria-label={`${SITE.name} home`}>Cult <span class="amp">&amp;</span> Crown</a>
+      <button class="menu-btn" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+        <span></span><span></span>
+      </button>
+    </div>
+    <nav id="site-nav" class="nav">
+      <ul class="wrap nav__list">
+        {nav.map((item) => (
+          <li><a href={item.href} class:list={[{ active: path.startsWith(item.href) }]}>{item.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <slot />
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__grid">
+      <div class="footer__brand">
+        <a href="/" class="wordmark wordmark--light">Cult <span class="amp">&amp;</span> Crown</a>
+        <p>{SITE.description}</p>
+      </div>
+      <div class="footer__col">
+        <h4>Read</h4>
+        <ul>
+          <li><a href="/articles/">All articles</a></li>
+          {Object.entries(CATEGORIES).map(([key, c]) => <li><a href={`/category/${key}/`}>{c.label}</a></li>)}
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Cult &amp; Crown</h4>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href={`mailto:${SITE.email}`}>Contact</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+          <li><a href={SITE.instagram} target="_blank" rel="noopener">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="wrap footer__bottom">
+      <span>© {year} Cult &amp; Crown. All rights reserved.</span>
+      <span>Film stills belong to their respective owners.</span>
+    </div>
+  </footer>
+
+  <script>
+    const btn = document.querySelector('.menu-btn');
+    const nav = document.getElementById('site-nav');
+    btn?.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      nav?.classList.toggle('open', !open);
+      document.body.classList.toggle('menu-open', !open);
+    });
+  </script>
+</body>
+</html>
+
+<style>
+  .topbar {
+    background: var(--teal); color: var(--white); text-align: center;
+    font-size: 11px; letter-spacing: .22em; text-transform: uppercase; padding: 9px 16px;
+  }
+  .header { background: var(--white); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; }
+  .header__inner { display: flex; align-items: center; justify-content: center; position: relative; padding-top: 26px; padding-bottom: 18px; }
+  .wordmark {
+    font-family: var(--serif); font-size: 40px; line-height: 1; letter-spacing: .02em;
+    text-transform: uppercase; color: var(--teal); white-space: nowrap;
+  }
+  .amp { font-style: italic; }
+  .wordmark--light { color: var(--white); font-size: 32px; }
+  .nav__list { list-style: none; margin: 0 auto; display: flex; justify-content: center; gap: 36px; padding-bottom: 16px; }
+  .nav__list a {
+    font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--ink); padding: 6px 0; border-bottom: 1px solid transparent; transition: color .2s, border-color .2s;
+  }
+  .nav__list a:hover, .nav__list a.active { color: var(--teal); border-color: var(--teal); }
+  .menu-btn { display: none; }
+
+  @media (max-width: 860px) {
+    .header__inner { padding-top: 16px; padding-bottom: 16px; }
+    .wordmark { font-size: 28px; }
+    .menu-btn {
+      display: flex; flex-direction: column; justify-content: center; gap: 7px;
+      position: absolute; right: var(--gutter); top: 50%; transform: translateY(-50%);
+      width: 40px; height: 40px; background: none; border: 0; cursor: pointer; padding: 8px;
+    }
+    .menu-btn span { display: block; height: 1.5px; background: var(--teal); transition: transform .25s; }
+    .menu-btn[aria-expanded='true'] span:first-child { transform: translateY(4.25px) rotate(45deg); }
+    .menu-btn[aria-expanded='true'] span:last-child { transform: translateY(-4.25px) rotate(-45deg); }
+    .nav { display: none; border-top: 1px solid var(--line); }
+    .nav.open { display: block; }
+    .nav__list { flex-direction: column; align-items: center; gap: 0; padding: 12px 0 20px; }
+    .nav__list a { display: block; padding: 14px 0; font-size: 13px; }
+  }
+
+  .footer { background: var(--black); color: rgba(255,255,255,.75); padding: 72px 0 32px; font-size: 15px; }
+  .footer__grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; }
+  .footer__brand p { margin-top: 18px; max-width: 380px; }
+  .footer h4 { font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--white); margin-bottom: 16px; }
+  .footer ul { list-style: none; padding: 0; margin: 0; }
+  .footer li + li { margin-top: 8px; }
+  .footer a:hover { color: var(--white); }
+  .footer__bottom { display: flex; justify-content: space-between; gap: 16px; margin-top: 56px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,.15); font-size: 13px; }
+  @media (max-width: 720px) {
+    .footer { text-align: center; }
+    .footer__grid { grid-template-columns: 1fr; gap: 40px; }
+    .footer__brand p { margin-left: auto; margin-right: auto; }
+    .footer__bottom { flex-direction: column; align-items: center; }
+  }
+</style>

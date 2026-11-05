@@ -1,0 +1,37 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import Newsletter from '../../components/Newsletter.astro';
+import { CATEGORIES, type CategoryKey } from '../../data/site';
+
+export function getStaticPaths() {
+  return Object.keys(CATEGORIES).map((cat) => ({ params: { cat } }));
+}
+const cat = Astro.params.cat as CategoryKey;
+const info = CATEGORIES[cat];
+const list = (await getCollection('articles', ({ data }) => !data.draft && data.category === cat)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+---
+<Base title={info.label} description={info.blurb}>
+  <section class="page-head">
+    <div class="wrap">
+      <span class="eyebrow">Category</span>
+      <h1>{info.label}</h1>
+      <p>{info.blurb}</p>
+      <ul class="filters">
+        <li><a href="/articles/">All</a></li>
+        {Object.entries(CATEGORIES).map(([k, c]) => <li><a class:list={[{ active: k === cat }]} href={`/category/${k}/`}>{c.label}</a></li>)}
+      </ul>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap">
+      {list.length
+        ? <div class="grid grid--3">{list.map((a) => <ArticleCard article={a} />)}</div>
+        : <p class="empty">New articles in this category are coming soon.</p>}
+    </div>
+  </section>
+  <Newsletter />
+</Base>

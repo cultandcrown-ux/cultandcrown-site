@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import Newsletter from '../components/Newsletter.astro';
+import { SITE } from '../data/site';
+---
+<Base title="About" description="The story behind Cult & Crown, a journal on the watches of cinema.">
+  <section class="page-head">
+    <div class="wrap">
+      <span class="eyebrow">Our story</span>
+      <h1>About Cult &amp; Crown</h1>
+      <p>{SITE.tagline}.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap">
+      <div class="prose">
+        <p>Cult &amp; Crown lives where cinema and watchmaking meet. We started on Instagram, rewatching films frame by frame to identify the watch on a character's wrist, and found that almost every choice tells a story: about the character, the era, the actor or the people working behind the camera.</p>
+        <h2>What we publish</h2>
+        <p><strong>On Screen</strong> covers the real watch worn in a film and why it ended up there. <strong>Recast</strong> imagines the watch we would give a character today. <strong>The Collection</strong> builds a three-watch collection from pieces seen on screen, within a set budget. <strong>Features</strong> are the longer reads on the industry and its stories.</p>
+        <h2>Independent by design</h2>
+        <p>Our picks are editorial. When a piece is made in partnership with a brand, we say so clearly at the top of the article.</p>
+        <h2>Get in touch</h2>
+        <p>Collaborations, corrections or a watch we missed: write to <a href={`mailto:${SITE.email}`}>{SITE.email}</a> or send us a message on <a href={SITE.instagram} target="_blank" rel="noopener">Instagram</a>.</p>
+      </div>
+    </div>
+  </section>
+  <Newsletter />
+</Base>

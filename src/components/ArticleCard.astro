@@ -1,0 +1,17 @@
+---
+import { CATEGORIES } from '../data/site';
+const { article } = Astro.props;
+const d = article.data;
+const date = d.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+---
+<a class="card" href={`/articles/${article.id}/`}>
+  <div class="card__media">
+    <img src={d.cover} alt={d.coverAlt || d.title} loading="lazy" width="1200" height="800" />
+  </div>
+  <div class="card__body">
+    <span class="eyebrow">{CATEGORIES[d.category].label}</span>
+    <h3 class="card__title">{d.title}</h3>
+    <p class="card__excerpt">{d.description}</p>
+    <div class="card__meta"><span>{date}</span><span>Read</span></div>
+  </div>
+</a>

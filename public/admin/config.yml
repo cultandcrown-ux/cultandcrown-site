@@ -1,0 +1,49 @@
+# Cult & Crown editor (Sveltia CMS)
+# Repository: cultandcrown-ux/cultandcrown-site
+# 2. Log in at cultandcrown.com/admin with "Sign in with token" (GitHub personal access token).
+
+backend:
+  name: github
+  repo: cultandcrown-ux/cultandcrown-site
+  branch: main
+
+site_url: https://cultandcrown.com
+display_url: https://cultandcrown.com
+logo_url: /favicon.png
+
+media_folder: public/images/uploads
+public_folder: /images/uploads
+
+slug:
+  encoding: ascii
+  clean_accents: true
+
+collections:
+  - name: articles
+    label: Articles
+    label_singular: Article
+    folder: src/content/articles
+    create: true
+    slug: "{{slug}}"
+    sortable_fields: [date, title, category]
+    summary: "{{title}} · {{date | date('YYYY-MM-DD')}}"
+    preview_path: "/articles/{{slug}}/"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: "Short description (shown on cards and Google)", name: description, widget: text }
+      - { label: Publish date, name: date, widget: datetime, format: "YYYY-MM-DD", time_format: false }
+      - label: Category
+        name: category
+        widget: select
+        options:
+          - { label: On Screen, value: on-screen }
+          - { label: Recast, value: recast }
+          - { label: The Collection, value: collection }
+          - { label: Features, value: features }
+      - { label: Cover image, name: cover, widget: image }
+      - { label: "Cover image description (for accessibility and SEO)", name: coverAlt, widget: string, required: false }
+      - { label: Film, name: film, widget: string, required: false }
+      - { label: Watch, name: watch, widget: string, required: false }
+      - { label: "Featured on the homepage", name: featured, widget: boolean, default: false }
+      - { label: "Draft (hidden from the site)", name: draft, widget: boolean, default: false }
+      - { label: Text, name: body, widget: markdown }

@@ -1,0 +1,19 @@
+---
+// Decorative watch dial drawn in SVG (minute track + hour markers).
+const { class: cls = '' } = Astro.props;
+const minutes = Array.from({ length: 60 }, (_, i) => i);
+---
+<svg class={cls} viewBox="0 0 400 400" aria-hidden="true" fill="none" stroke="currentColor">
+  <circle cx="200" cy="200" r="196" stroke-width="1" />
+  <circle cx="200" cy="200" r="168" stroke-width=".6" />
+  {minutes.map((m) => (
+    <line
+      x1="200" y1={m % 5 === 0 ? 14 : 22} x2="200" y2="30"
+      stroke-width={m % 5 === 0 ? 2.2 : .8}
+      transform={`rotate(${m * 6} 200 200)`}
+    />
+  ))}
+  <line x1="200" y1="200" x2="200" y2="78" stroke-width="2.4" transform="rotate(305 200 200)" />
+  <line x1="200" y1="200" x2="200" y2="52" stroke-width="1.4" transform="rotate(60 200 200)" />
+  <circle cx="200" cy="200" r="5" fill="currentColor" stroke="none" />
+</svg>
