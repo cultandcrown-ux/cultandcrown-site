@@ -1,17 +1,22 @@
 ---
+import Cover from './Cover.astro';
 import { CATEGORIES } from '../data/site';
 const { article } = Astro.props;
 const d = article.data;
 const date = d.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+const minutes = Math.max(3, Math.round((article.body ?? '').split(/\s+/).length / 220));
 ---
 <a class="card" href={`/articles/${article.id}/`}>
   <div class="card__media">
-    <img src={d.cover} alt={d.coverAlt || d.title} loading="lazy" width="1200" height="800" />
+    <span class="badge">{CATEGORIES[d.category].label}</span>
+    <Cover article={article} />
   </div>
   <div class="card__body">
-    <span class="eyebrow">{CATEGORIES[d.category].label}</span>
+    <div class="card__meta"><span>{date}</span><span>·</span><span>{minutes} min read</span></div>
     <h3 class="card__title">{d.title}</h3>
     <p class="card__excerpt">{d.description}</p>
-    <div class="card__meta"><span>{date}</span><span>Read</span></div>
+    <span class="card__more">Read the story
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
   </div>
 </a>

@@ -27,6 +27,8 @@ Sito statico in Astro con pannello per scrivere gli articoli su `/admin`.
 ## Note
 - **Font**: il sito usa Bodoni Moda come sostituto. Metti `BodoniFLF-Roman.woff2`, `BodoniFLF-Bold.woff2` e `BodoniFLF-Italic.woff2` in `public/fonts` e il Bodoni FLF viene usato automaticamente.
 - **Newsletter**: il form è pronto ma non ancora collegato. Quando scegli il servizio, l'indirizzo del form va in `src/components/Newsletter.astro`.
-- **Articoli di esempio**: i 4 articoli in `src/content/articles` sono segnaposto, cancellali o riscrivili dal pannello.
+- **Articoli**: i 10 articoli in `src/content/articles` sono scalette da completare dal pannello.
+- **Copertine**: se un articolo non ha la foto, il sito disegna una locandina con Film, Anno e Orologio (colore scelto con "Poster colour"). Caricando una foto, la locandina viene sostituita.
+- **Reel in home**: titoli e link sono in `src/data/reels.ts`.
 - **Categorie**: testi e nomi sono in `src/data/site.ts`.
 - **Lavorare in locale** (facoltativo): `npm install` e poi `npm run dev`.

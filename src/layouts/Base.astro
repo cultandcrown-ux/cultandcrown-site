@@ -29,6 +29,7 @@ const year = new Date().getFullYear();
   <meta name="description" content={description} />
   <link rel="canonical" href={canonical} />
   <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="alternate" type="application/rss+xml" title={SITE.name} href="/rss.xml" />
   <link rel="sitemap" href="/sitemap-index.xml" />
   <link rel="preload" href="/fonts/bodoni-moda-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
@@ -40,122 +41,132 @@ const year = new Date().getFullYear();
   <meta property="og:url" content={canonical} />
   <meta property="og:image" content={ogImage} />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="theme-color" content="#004953" />
+  <meta name="theme-color" content="#ffffff" />
 </head>
 <body>
-  <div class="topbar">{SITE.tagline}</div>
-  <header class="header">
-    <div class="wrap header__inner">
-      <a href="/" class="wordmark" aria-label={`${SITE.name} home`}>Cult <span class="amp">&amp;</span> Crown</a>
-      <button class="menu-btn" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
-        <span></span><span></span>
-      </button>
-    </div>
-    <nav id="site-nav" class="nav">
-      <ul class="wrap nav__list">
+  <header class="nav">
+    <div class="wrap nav__bar">
+      <a href="/" class="wordmark" aria-label={`${SITE.name} home`}>Cult <i>&amp;</i> Crown</a>
+      <nav class="nav__links" aria-label="Main">
         {nav.map((item) => (
-          <li><a href={item.href} class:list={[{ active: path.startsWith(item.href) }]}>{item.label}</a></li>
+          <a href={item.href} class:list={[{ active: path.startsWith(item.href) }]}>{item.label}</a>
         ))}
-      </ul>
-    </nav>
+      </nav>
+      <a class="nav__cta" href="#newsletter">Subscribe</a>
+      <button class="menu-btn" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu"><span></span><span></span></button>
+    </div>
+    <div id="mobile-menu" class="mobile-menu">
+      <nav class="wrap" aria-label="Mobile">
+        {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+        <a class="btn" href="#newsletter">Subscribe</a>
+      </nav>
+    </div>
   </header>
 
-  <main>
-    <slot />
-  </main>
+  <main><slot /></main>
 
   <footer class="footer">
-    <div class="wrap footer__grid">
-      <div class="footer__brand">
-        <a href="/" class="wordmark wordmark--light">Cult <span class="amp">&amp;</span> Crown</a>
-        <p>{SITE.description}</p>
+    <div class="wrap">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a href="/" class="wordmark wordmark--footer">Cult <i>&amp;</i> Crown</a>
+          <p>{SITE.description}</p>
+        </div>
+        <div class="footer__col">
+          <h4>Read</h4>
+          <ul>
+            <li><a href="/articles/">All articles</a></li>
+            {Object.entries(CATEGORIES).map(([key, c]) => <li><a href={`/category/${key}/`}>{c.label}</a></li>)}
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Discover</h4>
+          <ul>
+            <li><a href="/about/">Our story</a></li>
+            <li><a href={`mailto:${SITE.email}`}>Contact</a></li>
+            <li><a href="/rss.xml">RSS</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Follow</h4>
+          <ul>
+            <li><a href={SITE.instagram} target="_blank" rel="noopener">Instagram</a></li>
+            <li><a href="#newsletter">Newsletter</a></li>
+          </ul>
+        </div>
       </div>
-      <div class="footer__col">
-        <h4>Read</h4>
-        <ul>
-          <li><a href="/articles/">All articles</a></li>
-          {Object.entries(CATEGORIES).map(([key, c]) => <li><a href={`/category/${key}/`}>{c.label}</a></li>)}
-        </ul>
+      <div class="footer__bottom">
+        <span>© {year} Cult &amp; Crown. All rights reserved.</span>
+        <span>Film titles and stills belong to their respective owners.</span>
       </div>
-      <div class="footer__col">
-        <h4>Cult &amp; Crown</h4>
-        <ul>
-          <li><a href="/about/">About</a></li>
-          <li><a href={`mailto:${SITE.email}`}>Contact</a></li>
-          <li><a href="/rss.xml">RSS</a></li>
-          <li><a href={SITE.instagram} target="_blank" rel="noopener">Instagram</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="wrap footer__bottom">
-      <span>© {year} Cult &amp; Crown. All rights reserved.</span>
-      <span>Film stills belong to their respective owners.</span>
     </div>
   </footer>
 
   <script>
     const btn = document.querySelector('.menu-btn');
-    const nav = document.getElementById('site-nav');
+    const menu = document.getElementById('mobile-menu');
     btn?.addEventListener('click', () => {
       const open = btn.getAttribute('aria-expanded') === 'true';
       btn.setAttribute('aria-expanded', String(!open));
-      nav?.classList.toggle('open', !open);
-      document.body.classList.toggle('menu-open', !open);
+      menu?.classList.toggle('open', !open);
     });
+    menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => {
+      btn?.setAttribute('aria-expanded', 'false'); menu.classList.remove('open');
+    }));
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+    }), { rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
   </script>
 </body>
 </html>
 
 <style>
-  .topbar {
-    background: var(--teal); color: var(--white); text-align: center;
-    font-size: 11px; letter-spacing: .22em; text-transform: uppercase; padding: 9px 16px;
-  }
-  .header { background: var(--white); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; }
-  .header__inner { display: flex; align-items: center; justify-content: center; position: relative; padding-top: 26px; padding-bottom: 18px; }
-  .wordmark {
-    font-family: var(--serif); font-size: 40px; line-height: 1; letter-spacing: .02em;
-    text-transform: uppercase; color: var(--teal); white-space: nowrap;
-  }
-  .amp { font-style: italic; }
-  .wordmark--light { color: var(--white); font-size: 32px; }
-  .nav__list { list-style: none; margin: 0 auto; display: flex; justify-content: center; gap: 36px; padding-bottom: 16px; }
-  .nav__list a {
-    font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
-    color: var(--ink); padding: 6px 0; border-bottom: 1px solid transparent; transition: color .2s, border-color .2s;
-  }
-  .nav__list a:hover, .nav__list a.active { color: var(--teal); border-color: var(--teal); }
+  .nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,.78); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid var(--line); }
+  .nav__bar { height: 64px; display: flex; align-items: center; gap: 32px; }
+  .wordmark { font-family: var(--serif); font-size: 26px; line-height: 1; letter-spacing: .03em; text-transform: uppercase; color: var(--teal); white-space: nowrap; }
+  .wordmark i { font-style: italic; }
+  .nav__links { display: flex; gap: 28px; margin-left: auto; }
+  .nav__links a { font-size: 14px; color: var(--ink); opacity: .8; transition: opacity .2s, color .2s; }
+  .nav__links a:hover, .nav__links a.active { opacity: 1; color: var(--teal); }
+  .nav__cta { font-size: 14px; font-weight: 500; color: var(--white); background: var(--teal); padding: 8px 18px; border-radius: 999px; transition: background .2s; }
+  .nav__cta:hover { background: var(--teal-deep); }
   .menu-btn { display: none; }
+  .mobile-menu { display: none; }
 
-  @media (max-width: 860px) {
-    .header__inner { padding-top: 16px; padding-bottom: 16px; }
-    .wordmark { font-size: 28px; }
+  @media (max-width: 1000px) {
+    .nav__bar { justify-content: center; height: 56px; position: relative; }
+    .nav__links, .nav__cta { display: none; }
+    .wordmark { font-size: 22px; }
     .menu-btn {
-      display: flex; flex-direction: column; justify-content: center; gap: 7px;
+      display: flex; flex-direction: column; justify-content: center; gap: 6px;
       position: absolute; right: var(--gutter); top: 50%; transform: translateY(-50%);
-      width: 40px; height: 40px; background: none; border: 0; cursor: pointer; padding: 8px;
+      width: 40px; height: 40px; padding: 10px 8px; background: none; border: 0; cursor: pointer;
     }
-    .menu-btn span { display: block; height: 1.5px; background: var(--teal); transition: transform .25s; }
-    .menu-btn[aria-expanded='true'] span:first-child { transform: translateY(4.25px) rotate(45deg); }
-    .menu-btn[aria-expanded='true'] span:last-child { transform: translateY(-4.25px) rotate(-45deg); }
-    .nav { display: none; border-top: 1px solid var(--line); }
-    .nav.open { display: block; }
-    .nav__list { flex-direction: column; align-items: center; gap: 0; padding: 12px 0 20px; }
-    .nav__list a { display: block; padding: 14px 0; font-size: 13px; }
+    .menu-btn span { display: block; height: 1.5px; background: var(--ink); border-radius: 2px; transition: transform .3s var(--ease); }
+    .menu-btn[aria-expanded='true'] span:first-child { transform: translateY(3.75px) rotate(45deg); }
+    .menu-btn[aria-expanded='true'] span:last-child { transform: translateY(-3.75px) rotate(-45deg); }
+    .mobile-menu { display: block; max-height: 0; overflow: hidden; transition: max-height .4s var(--ease); }
+    .mobile-menu.open { max-height: 560px; }
+    .mobile-menu nav { display: flex; flex-direction: column; align-items: center; padding: 8px var(--gutter) 28px; }
+    .mobile-menu a:not(.btn) { width: 100%; text-align: center; padding: 14px 0; font-family: var(--serif); font-size: 26px; border-bottom: 1px solid var(--line); }
+    .mobile-menu .btn { margin-top: 24px; }
   }
 
-  .footer { background: var(--black); color: rgba(255,255,255,.75); padding: 72px 0 32px; font-size: 15px; }
-  .footer__grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; }
-  .footer__brand p { margin-top: 18px; max-width: 380px; }
-  .footer h4 { font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--white); margin-bottom: 16px; }
+  .footer { background: var(--soft); color: var(--muted); padding: 80px 0 36px; font-size: 14px; }
+  .footer__grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; }
+  .wordmark--footer { font-size: 28px; }
+  .footer__brand p { margin-top: 18px; max-width: 360px; line-height: 1.6; }
+  .footer h4 { font-family: var(--sans); font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 14px; }
   .footer ul { list-style: none; padding: 0; margin: 0; }
-  .footer li + li { margin-top: 8px; }
-  .footer a:hover { color: var(--white); }
-  .footer__bottom { display: flex; justify-content: space-between; gap: 16px; margin-top: 56px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,.15); font-size: 13px; }
-  @media (max-width: 720px) {
-    .footer { text-align: center; }
-    .footer__grid { grid-template-columns: 1fr; gap: 40px; }
+  .footer li + li { margin-top: 10px; }
+  .footer a:hover { color: var(--ink); }
+  .footer__bottom { display: flex; justify-content: space-between; gap: 16px; margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line); font-size: 12px; }
+  @media (max-width: 860px) {
+    .footer { text-align: center; padding-top: 64px; }
+    .footer__grid { grid-template-columns: 1fr 1fr 1fr; gap: 36px 16px; }
+    .footer__brand { grid-column: 1 / -1; }
     .footer__brand p { margin-left: auto; margin-right: auto; }
-    .footer__bottom { flex-direction: column; align-items: center; }
+    .footer__bottom { flex-direction: column; align-items: center; margin-top: 48px; }
   }
 </style>

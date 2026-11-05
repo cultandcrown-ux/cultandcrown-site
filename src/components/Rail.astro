@@ -1,0 +1,25 @@
+---
+// Apple-style horizontal carousel with prev/next buttons.
+const { id } = Astro.props;
+---
+<div class="rail" data-rail={id}>
+  <div class="rail__track"><slot /></div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-rail-nav]').forEach((nav) => {
+    const rail = document.querySelector<HTMLElement>(`[data-rail="${nav.dataset.railNav}"] .rail__track`);
+    if (!rail) return;
+    const [prev, next] = nav.querySelectorAll<HTMLButtonElement>('button');
+    const step = () => (rail.firstElementChild as HTMLElement)?.offsetWidth ?? rail.clientWidth;
+    const update = () => {
+      prev.disabled = rail.scrollLeft < 4;
+      next.disabled = rail.scrollLeft + rail.clientWidth > rail.scrollWidth - 4;
+    };
+    prev.addEventListener('click', () => rail.scrollBy({ left: -step() - 24 }));
+    next.addEventListener('click', () => rail.scrollBy({ left: step() + 24 }));
+    rail.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  });
+</script>

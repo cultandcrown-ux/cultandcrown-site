@@ -1,0 +1,16 @@
+---
+// Circular brand seal (like the W.O.E. badge): text on a circle around C&C.
+const { class: cls = '' } = Astro.props;
+---
+<svg class={cls} viewBox="0 0 300 300" aria-hidden="true">
+  <defs><path id="seal-circle" d="M150,150 m-112,0 a112,112 0 1,1 224,0 a112,112 0 1,1 -224,0" /></defs>
+  <circle cx="150" cy="150" r="146" fill="none" stroke="currentColor" stroke-width="3" />
+  <circle cx="150" cy="150" r="88" fill="none" stroke="currentColor" stroke-width="1.5" />
+  <text font-family="Inter, sans-serif" font-size="19" font-weight="600" letter-spacing="4" fill="currentColor">
+    <textPath href="#seal-circle" startOffset="0" textLength="696" lengthAdjust="spacing">CULT &amp; CROWN · WHERE THE SCREEN TELLS TIME ·</textPath>
+  </text>
+  {Array.from({ length: 12 }, (_, i) => (
+    <line x1="150" y1="68" x2="150" y2={i % 3 === 0 ? 80 : 75} stroke="currentColor" stroke-width={i % 3 === 0 ? 3 : 1.5} transform={`rotate(${i * 30} 150 150)`} />
+  ))}
+  <text x="150" y="168" text-anchor="middle" font-family="'Bodoni FLF','Bodoni Moda',Georgia,serif" font-size="58" fill="currentColor">C<tspan font-style="italic">&amp;</tspan>C</text>
+</svg>

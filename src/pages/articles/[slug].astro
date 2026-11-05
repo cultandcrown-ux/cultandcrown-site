@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
 import Newsletter from '../../components/Newsletter.astro';
+import Cover from '../../components/Cover.astro';
 import { CATEGORIES, SITE } from '../../data/site';
 
 export async function getStaticPaths() {
@@ -13,8 +14,7 @@ const { article, all } = Astro.props;
 const d = article.data;
 const { Content } = await render(article);
 const date = d.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-const words = (article.body ?? '').split(/\s+/).length;
-const minutes = Math.max(1, Math.round(words / 220));
+const minutes = Math.max(3, Math.round((article.body ?? '').split(/\s+/).length / 220));
 const related = all
   .filter((a) => a.id !== article.id)
   .sort((a, b) => Number(b.data.category === d.category) - Number(a.data.category === d.category) || b.data.date.valueOf() - a.data.date.valueOf())
@@ -22,7 +22,7 @@ const related = all
 const url = new URL(`/articles/${article.id}/`, Astro.site).toString();
 const jsonLd = {
   '@context': 'https://schema.org', '@type': 'Article', headline: d.title, description: d.description,
-  datePublished: d.date.toISOString(), image: new URL(d.cover, Astro.site).toString(),
+  datePublished: d.date.toISOString(), ...(d.cover ? { image: new URL(d.cover, Astro.site).toString() } : {}),
   author: { '@type': 'Organization', name: SITE.name }, publisher: { '@type': 'Organization', name: SITE.name }, mainEntityOfPage: url,
 };
 ---
@@ -31,57 +31,70 @@ const jsonLd = {
   <article>
     <header class="a-head">
       <div class="wrap">
-        <a class="eyebrow" href={`/category/${d.category}/`}>{CATEGORIES[d.category].label}</a>
+        <a class="a-pill" href={`/category/${d.category}/`}>{CATEGORIES[d.category].label}</a>
         <h1>{d.title}</h1>
         <p class="a-dek">{d.description}</p>
         <div class="a-meta"><span>{date}</span><span>·</span><span>{minutes} min read</span></div>
-        {(d.film || d.watch) && (
-          <dl class="a-facts">
-            {d.film && <div><dt>Film</dt><dd>{d.film}</dd></div>}
-            {d.watch && <div><dt>Watch</dt><dd>{d.watch}</dd></div>}
-          </dl>
-        )}
       </div>
     </header>
-    <div class="wrap a-cover"><img src={d.cover} alt={d.coverAlt || d.title} width="1200" height="800" /></div>
-    <div class="wrap section a-body">
+    <div class="wrap"><div class="a-cover"><Cover article={article} variant="wide" eager /></div></div>
+    {(d.film || d.watch) && (
+      <div class="wrap">
+        <dl class="a-facts">
+          {d.film && <div><dt>Film</dt><dd>{d.film}</dd></div>}
+          {d.year && <div><dt>Year</dt><dd>{d.year}</dd></div>}
+          {d.watch && <div><dt>Watch</dt><dd>{d.watch}</dd></div>}
+        </dl>
+      </div>
+    )}
+    <div class="wrap a-body">
       <div class="prose"><Content /></div>
       <div class="a-share">
-        <span class="eyebrow">Share</span>
-        <a href={`https://x.com/intent/post?url=${encodeURIComponent(url)}&text=${encodeURIComponent(d.title)}`} target="_blank" rel="noopener">X</a>
-        <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`} target="_blank" rel="noopener">Facebook</a>
-        <a href={`mailto:?subject=${encodeURIComponent(d.title)}&body=${encodeURIComponent(url)}`}>Email</a>
+        <span>Share this story</span>
+        <div>
+          <a href={`https://x.com/intent/post?url=${encodeURIComponent(url)}&text=${encodeURIComponent(d.title)}`} target="_blank" rel="noopener">X</a>
+          <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`} target="_blank" rel="noopener">Facebook</a>
+          <a href={`mailto:?subject=${encodeURIComponent(d.title)}&body=${encodeURIComponent(url)}`}>Email</a>
+        </div>
       </div>
     </div>
   </article>
 
   {related.length > 0 && (
-    <section class="section section--tinted">
+    <section class="section section--soft">
       <div class="wrap">
         <div class="section-head"><span class="eyebrow">Keep reading</span><h2>More from the journal</h2></div>
         <div class="grid grid--3">{related.map((a) => <ArticleCard article={a} />)}</div>
       </div>
     </section>
   )}
+  <div style="height: var(--section)"></div>
   <Newsletter />
 </Base>
 
 <style>
-  .a-head { text-align: center; padding: 72px 0 48px; }
-  .a-head .wrap { max-width: 860px; }
-  .a-head h1 { font-size: clamp(38px, 6vw, 66px); margin: 16px 0 20px; }
-  .a-dek { font-size: 20px; color: var(--muted); max-width: 680px; margin: 0 auto; }
-  .a-meta { display: flex; justify-content: center; gap: 10px; margin-top: 24px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
-  .a-facts { display: flex; justify-content: center; gap: 48px; margin: 32px 0 0; padding-top: 28px; border-top: 1px solid var(--line); }
-  .a-facts dt { font-size: 11px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--teal); }
-  .a-facts dd { margin: 6px 0 0; font-family: var(--serif); font-size: 21px; }
-  .a-cover img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
-  .a-share { max-width: 700px; margin: 56px auto 0; padding-top: 24px; border-top: 1px solid var(--line); display: flex; justify-content: center; gap: 24px; font-size: 13px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
-  .a-share a:hover { color: var(--teal); }
+  .a-head { text-align: center; padding: 80px 0 48px; }
+  .a-head .wrap { max-width: 900px; }
+  .a-pill { display: inline-block; padding: 7px 14px; border-radius: 999px; background: var(--soft); color: var(--teal); font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+  .a-head h1 { font-size: clamp(40px, 6.4vw, 76px); margin: 22px 0 22px; }
+  .a-dek { font-size: 21px; color: var(--muted); max-width: 680px; margin: 0 auto; }
+  .a-meta { display: flex; justify-content: center; gap: 8px; margin-top: 22px; font-size: 14px; color: var(--muted); }
+  .a-cover { border-radius: var(--r-xl); overflow: hidden; aspect-ratio: 16 / 9; box-shadow: var(--shadow); }
+  .a-cover > :global(*) { width: 100%; height: 100%; object-fit: cover; }
+  .a-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; max-width: 700px; margin: 32px auto 0; }
+  .a-facts div { background: var(--soft); border-radius: var(--r-md); padding: 18px 20px; text-align: center; }
+  .a-facts dt { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .a-facts dd { margin: 6px 0 0; font-family: var(--serif); font-size: 21px; line-height: 1.2; }
+  .a-body { padding-top: 64px; padding-bottom: var(--section); }
+  .a-share { max-width: 700px; margin: 64px auto 0; padding: 22px 26px; background: var(--soft); border-radius: var(--r-lg); display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 15px; font-weight: 500; }
+  .a-share div { display: flex; gap: 20px; }
+  .a-share a { color: var(--teal); }
   @media (max-width: 640px) {
     .a-head { padding: 48px 0 32px; }
     .a-dek { font-size: 18px; }
-    .a-facts { flex-direction: column; gap: 18px; }
-    .a-cover { padding: 0; }
+    .a-cover { aspect-ratio: 4 / 3; }
+    .a-facts { grid-template-columns: 1fr; }
+    .a-body { padding-top: 40px; }
+    .a-share { flex-direction: column; text-align: center; }
   }
 </style>

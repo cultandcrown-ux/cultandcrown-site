@@ -1,35 +1,50 @@
 ---
 // Newsletter block. To make it live, replace FORM_ACTION with the form URL
 // from your newsletter provider (e.g. Kit, Buttondown, MailerLite).
+import Dial from './Dial.astro';
 const FORM_ACTION = '';
 ---
-<section class="section section--dark newsletter">
-  <div class="wrap newsletter__inner">
-    <span class="eyebrow">Newsletter</span>
-    <h2>New stories, every week</h2>
-    <p>One email when a new article goes live. The watch, the film, the story behind the scene.</p>
-    <form class="newsletter__form" action={FORM_ACTION || undefined} method="post" target="_blank">
-      <label for="nl-email" class="visually-hidden">Email address</label>
-      <input id="nl-email" type="email" name="email" placeholder="Your email address" required />
-      <button class="btn btn--light" type="submit">Subscribe</button>
-    </form>
-    <small>No spam. Unsubscribe anytime.</small>
+<section id="newsletter" class="section newsletter-wrap">
+  <div class="wrap">
+    <div class="newsletter on-dark reveal">
+      <Dial class="newsletter__dial" />
+      <div class="newsletter__inner">
+        <span class="eyebrow">The Cult &amp; Crown letter</span>
+        <h2>New stories, every week</h2>
+        <p>One email when a new article goes live. The film, the watch and the story behind the scene.</p>
+        <form class="newsletter__form" action={FORM_ACTION || undefined} method="post" target="_blank">
+          <label for="nl-email" class="visually-hidden">Email address</label>
+          <input id="nl-email" type="email" name="email" placeholder="Email address" required />
+          <button class="btn btn--light" type="submit">Subscribe</button>
+        </form>
+        <small>No spam. Unsubscribe anytime.</small>
+      </div>
+    </div>
   </div>
 </section>
 
 <style>
-  .newsletter__inner { text-align: center; max-width: 640px; }
-  .newsletter h2 { font-size: clamp(32px, 4vw, 46px); margin: 10px 0 14px; }
-  .newsletter p { color: rgba(255,255,255,.82); }
-  .newsletter__form { display: flex; gap: 12px; margin: 32px auto 14px; max-width: 520px; }
+  .newsletter-wrap { padding-top: 0; }
+  .newsletter {
+    position: relative; overflow: hidden; border-radius: var(--r-xl); color: var(--white); text-align: center;
+    background: radial-gradient(120% 120% at 50% 0%, #0b6a76 0%, #004953 40%, #00222a 100%);
+    padding: 96px 32px;
+  }
+  .newsletter :global(.newsletter__dial) { position: absolute; width: 760px; height: 760px; left: 50%; top: 50%; transform: translate(-50%, -50%); color: rgba(255,255,255,.07); pointer-events: none; }
+  .newsletter__inner { position: relative; max-width: 620px; margin: 0 auto; }
+  .newsletter h2 { font-size: clamp(36px, 5vw, 56px); margin: 12px 0 16px; }
+  .newsletter p { color: rgba(255,255,255,.82); font-size: 19px; }
+  .newsletter__form { display: flex; gap: 12px; justify-content: center; margin: 36px auto 16px; max-width: 520px; }
   .newsletter__form input {
-    flex: 1; min-width: 0; height: 52px; padding: 0 18px; font: inherit; font-size: 15px;
-    background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,.5); border-radius: 0;
+    flex: 1; min-width: 0; height: var(--cta-h); padding: 0 22px; font: inherit; font-size: 16px; border-radius: 999px;
+    background: rgba(255,255,255,.1); color: var(--white); border: 1px solid rgba(255,255,255,.3);
   }
   .newsletter__form input::placeholder { color: rgba(255,255,255,.6); }
-  .newsletter__form input:focus { outline: none; border-color: var(--white); }
-  .newsletter small { font-size: 12px; color: rgba(255,255,255,.6); letter-spacing: .04em; }
-  @media (max-width: 560px) {
+  .newsletter__form input:focus { outline: none; border-color: var(--white); background: rgba(255,255,255,.16); }
+  .newsletter small { font-size: 13px; color: rgba(255,255,255,.6); }
+  @media (max-width: 640px) {
+    .newsletter { padding: 64px 20px; }
+    .newsletter p { font-size: 17px; }
     .newsletter__form { flex-direction: column; align-items: center; }
     .newsletter__form input, .newsletter__form .btn { flex: none; width: 100%; max-width: 320px; }
   }

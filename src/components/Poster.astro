@@ -1,0 +1,67 @@
+---
+// Typographic "title card" used when an article has no photo yet.
+// Scales with its container (container query units), so it works in cards, heroes and tiles.
+import Dial from './Dial.astro';
+interface Props {
+  film?: string;
+  year?: string;
+  watch?: string;
+  tone?: 'teal' | 'noir' | 'sepia' | 'steel';
+  label?: string;
+  variant?: 'card' | 'tall' | 'wide';
+  seed?: number;
+  class?: string;
+}
+const { film = 'Cult & Crown', year, watch, tone = 'teal', label = 'Cult & Crown', variant = 'card', seed = 0, class: cls = '' } = Astro.props;
+const positions = [
+  { x: 62, y: -18 }, { x: -28, y: 30 }, { x: 55, y: 48 }, { x: -20, y: -30 }, { x: 40, y: 10 },
+];
+const p = positions[Math.abs(seed) % positions.length];
+---
+<div class:list={['poster', `poster--${tone}`, `poster--${variant}`, cls]} role="img" aria-label={`${film}${year ? ` (${year})` : ''}${watch ? `, ${watch}` : ''}`}>
+  <div class="poster__dial" style={`left:${p.x}%; top:${p.y}%;`}><Dial /></div>
+  <div class="poster__grain"></div>
+  <div class="poster__top"><span>{label}</span>{year && <span>{year}</span>}</div>
+  <div class="poster__center">
+    <span class="poster__film">{film}</span>
+    {watch && <span class="poster__rule"></span>}
+    {watch && <span class="poster__watch">{watch}</span>}
+  </div>
+</div>
+
+<style>
+  .poster {
+    position: relative; overflow: hidden; container-type: inline-size;
+    width: 100%; height: 100%; color: #fff; isolation: isolate;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .poster--teal  { background: radial-gradient(120% 90% at 30% 20%, #0b6a76 0%, #004953 45%, #00222a 100%); }
+  .poster--noir  { background: radial-gradient(120% 90% at 30% 20%, #3a3a3c 0%, #121212 50%, #000 100%); }
+  .poster--sepia { background: radial-gradient(120% 90% at 30% 20%, #6b5238 0%, #33261a 50%, #120c07 100%); }
+  .poster--steel { background: radial-gradient(120% 90% at 30% 20%, #5b6f78 0%, #26363e 50%, #0b1317 100%); }
+  .poster__dial { position: absolute; width: 95cqw; aspect-ratio: 1; color: rgba(255,255,255,.12); z-index: -1; pointer-events: none; }
+  .poster__dial :global(svg) { width: 100%; height: 100%; }
+  .poster__grain {
+    position: absolute; inset: 0; z-index: -1; opacity: .22; mix-blend-mode: overlay; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .poster__top {
+    display: flex; justify-content: space-between; gap: 8px; padding: 6cqw 6.5cqw 0;
+    font-family: var(--sans); font-size: clamp(9px, 2.6cqw, 13px); font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.7);
+  }
+  .poster__center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 8cqw 6cqw; gap: 3.4cqw; }
+  .poster__film {
+    font-family: var(--serif); font-size: clamp(22px, 9.5cqw, 76px); line-height: 1; letter-spacing: .04em; text-transform: uppercase;
+    text-wrap: balance; text-shadow: 0 2px 30px rgba(0,0,0,.35);
+  }
+  .poster__rule { width: 12cqw; height: 1px; background: rgba(255,255,255,.5); }
+  .poster__watch { font-family: var(--sans); font-size: clamp(10px, 3cqw, 15px); font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.82); }
+  .poster--tall .poster__film { font-size: clamp(22px, 12cqw, 64px); }
+  .poster--tall .poster__center { padding-bottom: 14cqw; }
+  .poster--wide .poster__film { font-size: clamp(28px, 7cqw, 96px); }
+  .poster--wide .poster__top { padding: 3.2cqw 3.6cqw 0; font-size: clamp(10px, 1.3cqw, 14px); }
+  .poster--wide .poster__watch { font-size: clamp(11px, 1.5cqw, 16px); }
+  .poster--wide .poster__rule { width: 6cqw; }
+  .poster--wide .poster__center { gap: 2cqw; }
+  .poster--wide .poster__dial { width: 55cqw; }
+</style>
