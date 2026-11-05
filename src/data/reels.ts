@@ -37,4 +37,22 @@ export const REELS = [
     alt: 'Martin Sheen as Captain Willard with the Seiko 6105 diver, Cult & Crown reel cover',
     url: 'https://www.instagram.com/reel/DaYIQzfNf51/',
   },
+  {
+    film: 'Dr. No',
+    year: '1962',
+    watch: 'Rolex Submariner 6538',
+    tone: 'noir',
+    cover: '/images/reels/rolex-submariner-sean-connery-dr-no.webp',
+    alt: 'Sean Connery as James Bond with the Rolex Submariner "Big Crown", Cult & Crown reel cover',
+    url: 'https://www.instagram.com/reel/DaIw9DUtUo4/',
+  },
+  {
+    film: 'Back to the Future',
+    year: '1985',
+    watch: 'Casio CA-50',
+    tone: 'steel',
+    cover: '/images/reels/casio-ca-50-back-to-the-future.webp',
+    alt: 'Michael J. Fox as Marty McFly with the Casio CA-50 calculator watch, Cult & Crown reel cover',
+    url: 'https://www.instagram.com/reel/DbgMDqKNHT7/',
+  },
 ] as const;
