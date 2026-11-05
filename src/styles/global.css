@@ -184,7 +184,7 @@ button { font: inherit; }
 .prose h2 { font-size: 36px; margin-top: 1.9em; }
 .prose h3 { font-size: 27px; margin-top: 1.6em; }
 .prose a { color: var(--teal); text-decoration: underline; text-underline-offset: 3px; }
-.prose img { width: 100%; border-radius: var(--r-lg); margin: 2em 0; }
+.prose img { width: 100%; height: auto; border-radius: var(--r-lg); margin: 2em 0; }
 .prose blockquote { margin: 2em 0; padding: 28px 32px; background: var(--soft); border-radius: var(--r-lg); font-family: var(--serif); font-style: italic; font-size: 27px; line-height: 1.35; color: var(--teal); }
 .prose ul, .prose ol { padding-left: 1.2em; }
 .prose li + li { margin-top: .4em; }
@@ -196,3 +196,11 @@ button { font: inherit; }
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
 .reveal.is-in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } * { scroll-behavior: auto !important; } }
+
+/* Figures inside articles */
+.prose figure { margin: 2.2em 0; }
+.prose figure img { margin: 0; width: 100%; height: auto; border-radius: var(--r-lg); }
+.prose figure.narrow { max-width: 420px; margin-left: auto; margin-right: auto; }
+.prose figcaption { margin-top: 12px; font-size: 14px; line-height: 1.5; color: var(--muted); text-align: center; }
+.prose .faq h3 { font-family: var(--sans); font-size: 19px; font-weight: 600; margin-top: 1.6em; }
+.prose .note { font-size: 15px; color: var(--muted); }
