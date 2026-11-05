@@ -7,6 +7,7 @@ film: Apocalypse Now
 year: 1979
 watch: Marathon SSNAV
 tone: teal
+noindex: true
 ---
 
 *Outline. Full article coming soon.*

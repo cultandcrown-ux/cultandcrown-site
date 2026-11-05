@@ -7,6 +7,7 @@ film: Drive
 year: 2011
 watch: Counterfeit Patek Philippe
 tone: teal
+noindex: true
 ---
 
 *Outline. Full article coming soon.*

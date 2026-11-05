@@ -32,6 +32,9 @@ collections:
       - { label: Title, name: title, widget: string }
       - { label: "Short description (shown on cards and Google)", name: description, widget: text }
       - { label: Publish date, name: date, widget: datetime, format: "YYYY-MM-DD", time_format: false }
+      - { label: "Last updated (optional)", name: updated, widget: datetime, format: "YYYY-MM-DD", time_format: false, required: false }
+      - { label: "SEO title for Google (optional, max 60 characters)", name: seoTitle, widget: string, required: false }
+      - { label: "Quick answer: 2-3 sentences that answer the main question directly (shown at the top, read by Google and AI)", name: summary, widget: text, required: false }
       - label: Category
         name: category
         widget: select
@@ -54,6 +57,21 @@ collections:
           - { label: Noir, value: noir }
           - { label: Sepia, value: sepia }
           - { label: Steel, value: steel }
+      - label: "Sources (links to the articles you used)"
+        name: sources
+        widget: list
+        required: false
+        fields:
+          - { label: Title, name: title, widget: string }
+          - { label: Link, name: url, widget: string }
+      - label: "FAQ (shown at the end and marked up for Google)"
+        name: faq
+        widget: list
+        required: false
+        fields:
+          - { label: Question, name: q, widget: string }
+          - { label: Answer, name: a, widget: text }
       - { label: "Featured on the homepage", name: featured, widget: boolean, default: false }
       - { label: "Draft (hidden from the site)", name: draft, widget: boolean, default: false }
+      - { label: "Hide from Google (visible on the site, e.g. outlines not yet written)", name: noindex, widget: boolean, default: false }
       - { label: Text, name: body, widget: markdown }

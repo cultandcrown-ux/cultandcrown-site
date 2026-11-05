@@ -9,7 +9,7 @@ import Rail from '../components/Rail.astro';
 import RailNav from '../components/RailNav.astro';
 import Dial from '../components/Dial.astro';
 import Seal from '../components/Seal.astro';
-import { SITE, CATEGORIES } from '../data/site';
+import { SITE, CATEGORIES, ORG_LD, WEBSITE_LD } from '../data/site';
 import { REELS } from '../data/reels';
 
 const all = (await getCollection('articles', ({ data }) => !data.draft)).sort(
@@ -21,7 +21,7 @@ const feed = all.slice(0, 6);
 const catTones = { 'on-screen': 'teal', recast: 'noir', collection: 'steel', features: 'sepia' } as const;
 const counts = Object.fromEntries(Object.keys(CATEGORIES).map((k) => [k, all.filter((a) => a.data.category === k).length]));
 ---
-<Base>
+<Base jsonLd={[ORG_LD, WEBSITE_LD]}>
   <!-- 1. Hero -->
   <section class="hero-wrap">
     <div class="wrap">

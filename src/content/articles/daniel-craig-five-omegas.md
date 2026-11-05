@@ -7,6 +7,7 @@ film: Daniel Craig's 007
 year: 2006–2021
 watch: Omega Seamaster
 tone: noir
+noindex: true
 ---
 
 *Outline. Full article coming soon.*

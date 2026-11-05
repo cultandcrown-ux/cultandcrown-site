@@ -1,0 +1,7 @@
+# Cult & Crown
+# Search engines and AI assistants are welcome to read and cite our articles.
+User-agent: *
+Allow: /
+Disallow: /admin/
+
+Sitemap: https://cultandcrown.com/sitemap-index.xml

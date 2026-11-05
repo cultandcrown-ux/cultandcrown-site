@@ -7,6 +7,7 @@ film: American Psycho
 year: 2000
 watch: Rolex Datejust
 tone: sepia
+noindex: true
 ---
 
 *Outline. Full article coming soon.*

@@ -4,7 +4,7 @@ import Base from '../../layouts/Base.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
 import Newsletter from '../../components/Newsletter.astro';
 import Cover from '../../components/Cover.astro';
-import { CATEGORIES, SITE } from '../../data/site';
+import { CATEGORIES, SITE, ORG_LD, breadcrumbLd } from '../../data/site';
 
 export async function getStaticPaths() {
   const all = await getCollection('articles', ({ data }) => !data.draft);
@@ -13,31 +13,77 @@ export async function getStaticPaths() {
 const { article, all } = Astro.props;
 const d = article.data;
 const { Content } = await render(article);
-const date = d.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+const fmt = (x: Date) => x.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+const date = fmt(d.date);
+const updated = d.updated && d.updated > d.date ? d.updated : undefined;
 const minutes = Math.max(3, Math.round((article.body ?? '').split(/\s+/).length / 220));
 const related = all
-  .filter((a) => a.id !== article.id)
-  .sort((a, b) => Number(b.data.category === d.category) - Number(a.data.category === d.category) || b.data.date.valueOf() - a.data.date.valueOf())
+  .filter((a) => a.id !== article.id && !a.data.noindex)
+  .concat(all.filter((a) => a.id !== article.id && a.data.noindex))
+  .sort((a, b) => Number(b.data.category === d.category) - Number(a.data.category === d.category))
   .slice(0, 3);
-const url = new URL(`/articles/${article.id}/`, Astro.site).toString();
-const jsonLd = {
-  '@context': 'https://schema.org', '@type': 'Article', headline: d.title, description: d.description,
-  datePublished: d.date.toISOString(), ...(d.cover ? { image: new URL(d.cover, Astro.site).toString() } : {}),
-  author: { '@type': 'Organization', name: SITE.name }, publisher: { '@type': 'Organization', name: SITE.name }, mainEntityOfPage: url,
+const path = `/articles/${article.id}/`;
+const url = `${SITE.url}${path}`;
+const cat = CATEGORIES[d.category];
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: cat.label, path: `/category/${d.category}/` },
+  { name: d.title, path },
+];
+const articleLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  '@id': `${url}#article`,
+  headline: d.seoTitle ?? d.title,
+  description: d.description,
+  inLanguage: 'en',
+  datePublished: d.date.toISOString(),
+  dateModified: (updated ?? d.date).toISOString(),
+  mainEntityOfPage: url,
+  articleSection: cat.label,
+  ...(d.sources.length ? { citation: d.sources.map((src) => ({ '@type': 'CreativeWork', name: src.title, url: src.url })) } : {}),
+  wordCount: (article.body ?? '').split(/\s+/).length,
+  ...(d.cover ? { image: { '@type': 'ImageObject', url: `${SITE.url}${d.cover}`, caption: d.coverAlt } } : {}),
+  author: { '@type': 'Organization', name: SITE.name, url: `${SITE.url}/about/` },
+  publisher: { '@id': ORG_LD['@id'], '@type': 'Organization', name: SITE.name, logo: { '@type': 'ImageObject', url: ORG_LD.logo } },
+  about: [
+    ...(d.film ? [{ '@type': 'Movie', name: d.film, ...(d.year && /^\d{4}$/.test(d.year) ? { dateCreated: d.year } : {}) }] : []),
+    ...(d.watch ? [{ '@type': 'Product', name: d.watch }] : []),
+  ],
 };
+const faqLd = d.faq.length
+  ? { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: d.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }
+  : null;
+const jsonLd = [articleLd, breadcrumbLd(crumbs), ...(faqLd ? [faqLd] : [])];
 ---
-<Base title={d.title} description={d.description} image={d.cover} type="article">
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+<Base
+  title={d.seoTitle ?? d.title}
+  description={d.description}
+  image={d.cover}
+  imageAlt={d.coverAlt || d.title}
+  type="article"
+  published={d.date}
+  modified={updated}
+  noindex={d.noindex}
+  jsonLd={jsonLd}
+>
   <article>
     <header class="a-head">
       <div class="wrap">
-        <a class="a-pill" href={`/category/${d.category}/`}>{CATEGORIES[d.category].label}</a>
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <a href="/">Home</a><span aria-hidden="true">/</span><a href={`/category/${d.category}/`}>{cat.label}</a>
+        </nav>
         <h1>{d.title}</h1>
         <p class="a-dek">{d.description}</p>
-        <div class="a-meta"><span>{date}</span><span>·</span><span>{minutes} min read</span></div>
+        <div class="a-meta">
+          <span>By <a href="/about/">Cult &amp; Crown</a></span><span>·</span>
+          <time datetime={d.date.toISOString()}>{date}</time>
+          {updated && <><span>·</span><span>Updated <time datetime={updated.toISOString()}>{fmt(updated)}</time></span></>}
+          <span>·</span><span>{minutes} min read</span>
+        </div>
       </div>
     </header>
-    <div class="wrap"><div class="a-cover"><Cover article={article} variant="wide" eager /></div></div>
+    <div class="wrap"><figure class="a-cover"><Cover article={article} variant="wide" eager /></figure></div>
     {(d.film || d.watch) && (
       <div class="wrap">
         <dl class="a-facts">
@@ -48,7 +94,31 @@ const jsonLd = {
       </div>
     )}
     <div class="wrap a-body">
+      {d.summary && (
+        <aside class="a-summary" aria-label="Quick answer">
+          <span class="eyebrow">Quick answer</span>
+          <p>{d.summary}</p>
+        </aside>
+      )}
       <div class="prose"><Content /></div>
+      {d.faq.length > 0 && (
+        <section class="prose faq" aria-labelledby="faq-title">
+          <h2 id="faq-title">Frequently asked questions</h2>
+          {d.faq.map((f) => (
+            <details open>
+              <summary><h3>{f.q}</h3></summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </section>
+      )}
+      {d.sources.length > 0 && (
+        <section class="prose sources" aria-labelledby="sources-title">
+          <h2 id="sources-title">Sources</h2>
+          <ul>{d.sources.map((src) => <li><a href={src.url} target="_blank" rel="noopener">{src.title}</a></li>)}</ul>
+          {d.cover && <p class="note">Photos are used for editorial purposes and belong to their respective owners.</p>}
+        </section>
+      )}
       <div class="a-share">
         <span>Share this story</span>
         <div>
@@ -73,28 +143,44 @@ const jsonLd = {
 </Base>
 
 <style>
-  .a-head { text-align: center; padding: 80px 0 48px; }
+  .a-head { text-align: center; padding: 72px 0 48px; }
   .a-head .wrap { max-width: 900px; }
-  .a-pill { display: inline-block; padding: 7px 14px; border-radius: 999px; background: var(--soft); color: var(--teal); font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+  .crumbs { display: inline-flex; gap: 10px; align-items: center; padding: 7px 16px; border-radius: 999px; background: var(--soft); font-size: 13px; color: var(--muted); }
+  .crumbs a { color: var(--teal); font-weight: 500; }
   .a-head h1 { font-size: clamp(40px, 6.4vw, 76px); margin: 22px 0 22px; }
   .a-dek { font-size: 21px; color: var(--muted); max-width: 680px; margin: 0 auto; }
-  .a-meta { display: flex; justify-content: center; gap: 8px; margin-top: 22px; font-size: 14px; color: var(--muted); }
-  .a-cover { border-radius: var(--r-xl); overflow: hidden; aspect-ratio: 16 / 9; box-shadow: var(--shadow); }
+  .a-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 22px; font-size: 14px; color: var(--muted); }
+  .a-meta a { color: var(--teal); }
+  .a-cover { margin: 0; border-radius: var(--r-xl); overflow: hidden; aspect-ratio: 16 / 9; box-shadow: var(--shadow); }
   .a-cover > :global(*) { width: 100%; height: 100%; object-fit: cover; }
   .a-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; max-width: 700px; margin: 32px auto 0; }
   .a-facts div { background: var(--soft); border-radius: var(--r-md); padding: 18px 20px; text-align: center; }
   .a-facts dt { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
   .a-facts dd { margin: 6px 0 0; font-family: var(--serif); font-size: 21px; line-height: 1.2; }
-  .a-body { padding-top: 64px; padding-bottom: var(--section); }
-  .a-share { max-width: 700px; margin: 64px auto 0; padding: 22px 26px; background: var(--soft); border-radius: var(--r-lg); display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 15px; font-weight: 500; }
+  .a-body { padding-top: 56px; padding-bottom: var(--section); }
+  .a-summary { max-width: 700px; margin: 0 auto 48px; padding: 24px 28px; border-radius: var(--r-lg); background: var(--soft); border-left: 3px solid var(--teal); }
+  .a-summary p { margin-top: 8px; font-size: 17px; line-height: 1.65; }
+  .faq { margin-top: 64px; }
+  .sources { margin-top: 56px; }
+  .sources h2 { font-size: 28px; }
+  .sources li { font-size: 16px; }
+  .faq details { border-bottom: 1px solid var(--line); padding: 4px 0 16px; }
+  .faq summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: '+'; font-size: 24px; color: var(--teal); transition: transform .3s var(--ease); }
+  .faq details[open] summary::after { transform: rotate(45deg); }
+  .faq summary h3 { font-family: var(--sans); font-size: 18px; font-weight: 600; margin: 16px 0 0; }
+  .faq details p { margin-top: 10px; color: var(--muted); font-size: 17px; }
+  .a-share { max-width: 700px; margin: 56px auto 0; padding: 22px 26px; background: var(--soft); border-radius: var(--r-lg); display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 15px; font-weight: 500; }
   .a-share div { display: flex; gap: 20px; }
   .a-share a { color: var(--teal); }
   @media (max-width: 640px) {
-    .a-head { padding: 48px 0 32px; }
+    .a-head { padding: 40px 0 32px; }
     .a-dek { font-size: 18px; }
     .a-cover { aspect-ratio: 4 / 3; }
     .a-facts { grid-template-columns: 1fr; }
     .a-body { padding-top: 40px; }
+    .a-summary { padding: 20px; }
     .a-share { flex-direction: column; text-align: center; }
   }
 </style>

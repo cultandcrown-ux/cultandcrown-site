@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
 import Newsletter from '../../components/Newsletter.astro';
-import { CATEGORIES, type CategoryKey } from '../../data/site';
+import { CATEGORIES, breadcrumbLd, type CategoryKey } from '../../data/site';
 
 export function getStaticPaths() {
   return Object.keys(CATEGORIES).map((cat) => ({ params: { cat } }));
@@ -14,7 +14,7 @@ const list = (await getCollection('articles', ({ data }) => !data.draft && data.
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
 ---
-<Base title={info.label} description={info.blurb}>
+<Base title={`${info.label}: watches in film`} description={info.blurb} jsonLd={[breadcrumbLd([{ name: 'Home', path: '/' }, { name: 'Articles', path: '/articles/' }, { name: info.label, path: `/category/${cat}/` }])]}>
   <section class="page-head">
     <div class="wrap">
       <span class="eyebrow">Category</span>

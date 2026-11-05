@@ -7,6 +7,7 @@ film: James Bond
 year: "007"
 watch: Christopher Ward C1 Moonglow
 tone: noir
+noindex: true
 ---
 
 *Outline. Full article coming soon.*

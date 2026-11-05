@@ -7,6 +7,7 @@ film: Le Mans
 year: 1971
 watch: Heuer Monaco 1133B
 tone: teal
+noindex: true
 ---
 
 *Outline. Full article coming soon.*

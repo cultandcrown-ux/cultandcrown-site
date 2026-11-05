@@ -7,6 +7,7 @@ film: The Collection
 year: Vol. 1
 watch: Seiko · Casio · Hamilton
 tone: steel
+noindex: true
 ---
 
 *Outline. Full article coming soon.*

@@ -5,7 +5,37 @@ export const SITE = {
     'An online journal on the watches of cinema: the pieces actors wore on screen, the stories behind them, and the watches we would cast today.',
   instagram: 'https://www.instagram.com/cultandcrown',
   email: 'hello@cultandcrown.com',
+  url: 'https://cultandcrown.com',
+  logo: '/logo-square.png',
 };
+
+// Structured data reused across pages (schema.org).
+export const ORG_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': `${SITE.url}/#organization`,
+  name: SITE.name,
+  url: SITE.url,
+  logo: `${SITE.url}${SITE.logo}`,
+  description: SITE.description,
+  sameAs: [SITE.instagram],
+};
+export const WEBSITE_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${SITE.url}/#website`,
+  name: SITE.name,
+  url: SITE.url,
+  inLanguage: 'en',
+  publisher: { '@id': `${SITE.url}/#organization` },
+};
+export function breadcrumbLd(items: { name: string; path: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((it, i) => ({ '@type': 'ListItem', position: i + 1, name: it.name, item: `${SITE.url}${it.path}` })),
+  };
+}
 
 export const CATEGORIES = {
   'on-screen': {

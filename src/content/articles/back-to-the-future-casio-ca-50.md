@@ -7,6 +7,7 @@ film: Back to the Future
 year: 1985
 watch: Casio CA-50
 tone: steel
+noindex: true
 ---
 
 *Outline. Full article coming soon.*

@@ -7,6 +7,7 @@ film: Apollo 13
 year: 1995
 watch: Omega Speedmaster
 tone: noir
+noindex: true
 ---
 
 *Outline. Full article coming soon.*

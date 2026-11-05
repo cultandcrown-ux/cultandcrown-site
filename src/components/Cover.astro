@@ -7,5 +7,5 @@ const d = article.data;
 const seed = [...article.id].reduce((a: number, c: string) => a + c.charCodeAt(0), 0);
 ---
 {d.cover
-  ? <img src={d.cover} alt={d.coverAlt || d.title} loading={eager ? 'eager' : 'lazy'} width="1200" height="900" />
+  ? <img src={d.cover} alt={d.coverAlt || d.title} loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : 'auto'} decoding="async" width="1200" height="900" />
   : <Poster film={d.film ?? d.title} year={d.year} watch={d.watch} tone={d.tone} label={CATEGORIES[d.category].label} variant={variant} seed={seed} />}

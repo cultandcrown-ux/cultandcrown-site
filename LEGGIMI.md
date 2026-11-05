@@ -32,3 +32,11 @@ Sito statico in Astro con pannello per scrivere gli articoli su `/admin`.
 - **Reel in home**: titoli e link sono in `src/data/reels.ts`.
 - **Categorie**: testi e nomi sono in `src/data/site.ts`.
 - **Lavorare in locale** (facoltativo): `npm install` e poi `npm run dev`.
+
+## SEO e GEO (campi del pannello)
+- **SEO title**: titolo per Google, massimo 60 caratteri. Se titolo + " | Cult & Crown" supera 60, il brand viene omesso.
+- **Quick answer**: 2-3 frasi che rispondono subito alla domanda principale. È il testo che Google e gli assistenti AI citano più spesso.
+- **FAQ**: domande e risposte in fondo all'articolo, marcate come FAQPage.
+- **Sources**: link alle fonti, mostrati in fondo e inseriti nei dati strutturati.
+- **Hide from Google**: l'articolo resta visibile sul sito ma fuori da Google, sitemap, RSS e llms.txt (usalo per le scalette).
+- **Alt text**: ogni foto caricata va descritta (chi, cosa, quale orologio).
