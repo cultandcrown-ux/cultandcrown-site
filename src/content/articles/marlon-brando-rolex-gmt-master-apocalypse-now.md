@@ -9,7 +9,6 @@ film: Apocalypse Now
 year: 1979
 watch: Rolex GMT-Master 1675
 tone: sepia
-featured: true
 seoTitle: "Marlon Brando's Rolex GMT-Master 1675 in Apocalypse Now"
 summary: "In Apocalypse Now (1979), Marlon Brando wears his own Rolex GMT-Master reference 1675 from 1972 as Colonel Kurtz. He removed the bezel himself because the watch looked too polished for the character, and engraved \"M. Brando\" on the caseback. The watch sold at Phillips in New York on 10 December 2019 for $1.95 million."
 sources:
