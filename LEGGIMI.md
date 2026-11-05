@@ -25,7 +25,7 @@ Sito statico in Astro con pannello per scrivere gli articoli su `/admin`.
 4. Scrivi, carica la copertina, premi Publish: il sito si aggiorna da solo in 1-2 minuti.
 
 ## Note
-- **Font**: il sito usa Bodoni Moda come sostituto. Metti `BodoniFLF-Roman.woff2`, `BodoniFLF-Bold.woff2` e `BodoniFLF-Italic.woff2` in `public/fonts` e il Bodoni FLF viene usato automaticamente.
+- **Font**: Bodoni FLF (titoli) e Inter (testi), caricati da `public/fonts`.
 - **Newsletter**: il form è pronto ma non ancora collegato. Quando scegli il servizio, l'indirizzo del form va in `src/components/Newsletter.astro`.
 - **Articoli**: i 10 articoli in `src/content/articles` sono scalette da completare dal pannello.
 - **Copertine**: se un articolo non ha la foto, il sito disegna una locandina con Film, Anno e Orologio (colore scelto con "Poster colour"). Caricando una foto, la locandina viene sostituita.
