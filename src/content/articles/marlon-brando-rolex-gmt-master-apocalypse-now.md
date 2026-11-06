@@ -96,4 +96,4 @@ Most famous screen-worn watches are product placement or prop department choices
 
 It also explains why the bezel-less GMT has become a quiet cult object among collectors. Removing the bezel from a vintage 1675 today would destroy much of its value, but the idea behind it still resonates: a watch reduced to its function, on the wrist of a man who has lost everything else.
 
-If you want to stay in the same film, read our [Recast of Captain Willard](/articles/recast-willard-marathon-ssnav/), where we choose the one watch we would give Martin Sheen's character for the journey upriver. For more real watches worn in famous scenes, browse our [On Screen](/category/on-screen/) section.
+If you want to stay in the same film, read our [Recast of Captain Willard](/articles/captain-willard-watch-marathon-navigator/), where we choose the one watch we would give Martin Sheen's character for the journey upriver. For more real watches worn in famous scenes, browse our [On Screen](/category/on-screen/) section.
