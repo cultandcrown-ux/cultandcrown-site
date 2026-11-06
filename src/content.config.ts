@@ -29,6 +29,8 @@ const articles = defineCollection({
     draft: z.boolean().default(false),
     // Visible on the site but kept out of Google and the sitemap (e.g. outlines not yet written).
     noindex: z.boolean().default(false),
+    // Shown as a 'coming soon' card with a padlock; the article page is not published.
+    locked: z.boolean().default(false),
   }),
 });
 

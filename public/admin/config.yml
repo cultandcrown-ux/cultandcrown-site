@@ -74,4 +74,5 @@ collections:
       - { label: "Featured on the homepage", name: featured, widget: boolean, default: false }
       - { label: "Draft (hidden from the site)", name: draft, widget: boolean, default: false }
       - { label: "Hide from Google (visible on the site, e.g. outlines not yet written)", name: noindex, widget: boolean, default: false }
+      - { label: "Locked: show as 'Coming soon' with a padlock, article not published", name: locked, widget: boolean, default: false }
       - { label: Text, name: body, widget: markdown }

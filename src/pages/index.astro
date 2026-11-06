@@ -15,9 +15,10 @@ import { REELS } from '../data/reels';
 const all = (await getCollection('articles', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
-const featured = all.find((a) => a.data.featured) ?? all[0];
+const open = all.filter((a) => !a.data.locked);
+const featured = open.find((a) => a.data.featured) ?? open[0];
 const latest = all.filter((a) => a.id !== featured?.id).slice(0, 6);
-const feed = all.slice(0, 6);
+const feed = open.slice(0, 6);
 const catTones = { 'on-screen': 'teal', recast: 'noir', collection: 'steel', features: 'sepia' } as const;
 const counts = Object.fromEntries(Object.keys(CATEGORIES).map((k) => [k, all.filter((a) => a.data.category === k).length]));
 ---

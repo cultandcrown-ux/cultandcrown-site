@@ -8,6 +8,7 @@ year: 2011
 watch: Counterfeit Patek Philippe
 tone: teal
 noindex: true
+locked: true
 ---
 
 *Outline. Full article coming soon.*

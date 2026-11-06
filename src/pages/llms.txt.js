@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import { SITE, CATEGORIES } from '../data/site';
 
 export async function GET() {
-  const articles = (await getCollection('articles', ({ data }) => !data.draft && !data.noindex)).sort(
+  const articles = (await getCollection('articles', ({ data }) => !data.draft && !data.noindex && !data.locked)).sort(
     (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
   );
   const lines = [

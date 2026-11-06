@@ -6,7 +6,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 const dir = './src/content/articles';
 const hidden = readdirSync(dir)
   .filter((f) => f.endsWith('.md'))
-  .filter((f) => /^(noindex|draft): true$/m.test(readFileSync(`${dir}/${f}`, 'utf8').split('---')[1] ?? ''))
+  .filter((f) => /^(noindex|draft|locked): true$/m.test(readFileSync(`${dir}/${f}`, 'utf8').split('---')[1] ?? ''))
   .map((f) => `/articles/${f.replace(/\.md$/, '')}/`);
 
 export default defineConfig({

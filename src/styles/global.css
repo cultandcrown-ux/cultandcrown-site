@@ -213,3 +213,12 @@ button { font: inherit; }
 .prose th { background: var(--soft); font-weight: 600; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
 .prose tr:last-child td { border-bottom: 0; }
 @media (max-width: 640px) { .prose table { display: block; overflow-x: auto; font-size: 14px; } .prose th, .prose td { padding: 10px; } }
+
+/* Locked (coming soon) cards */
+.card--locked { cursor: default; }
+.card--locked:hover { transform: none; box-shadow: var(--shadow); }
+.card--locked .card__media > .poster, .card--locked .card__media > img { filter: blur(6px) saturate(.7); transform: scale(1.08); }
+.card--locked:hover .card__media > .poster, .card--locked:hover .card__media > img { transform: scale(1.08); }
+.card__lock { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: var(--white); background: rgba(0,26,31,.35); }
+.card__lock span { font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+.card__more--locked { color: var(--muted); }

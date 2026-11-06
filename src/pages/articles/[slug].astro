@@ -7,7 +7,7 @@ import Cover from '../../components/Cover.astro';
 import { CATEGORIES, SITE, ORG_LD, breadcrumbLd } from '../../data/site';
 
 export async function getStaticPaths() {
-  const all = await getCollection('articles', ({ data }) => !data.draft);
+  const all = await getCollection('articles', ({ data }) => !data.draft && !data.locked);
   return all.map((article) => ({ params: { slug: article.id }, props: { article, all } }));
 }
 const { article, all } = Astro.props;
