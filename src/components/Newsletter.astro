@@ -1,7 +1,6 @@
 ---
-// Newsletter block. To make it live, replace FORM_ACTION with the form URL
-// from your newsletter provider (e.g. Kit, Buttondown, MailerLite).
-const FORM_ACTION = '';
+// Newsletter block. Sign-ups are saved in Cloudflare (functions/api/subscribe.js)
+// until a newsletter provider is chosen.
 ---
 <section id="newsletter" class="section newsletter-wrap">
   <div class="wrap">
@@ -11,16 +10,50 @@ const FORM_ACTION = '';
         <span class="eyebrow">The Cult &amp; Crown letter</span>
         <h2>New stories, every week</h2>
         <p>One email when a new article goes live. The film, the watch and the story behind the scene.</p>
-        <form class="newsletter__form" action={FORM_ACTION || undefined} method="post" target="_blank">
+        <form class="newsletter__form" action="/api/subscribe" method="post" data-newsletter>
           <label for="nl-email" class="visually-hidden">Email address</label>
-          <input id="nl-email" type="email" name="email" placeholder="Email address" required />
+          <input id="nl-email" type="email" name="email" placeholder="Email address" autocomplete="email" required />
+          <input type="text" name="website" class="nl-hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <input type="hidden" name="source" value={Astro.url.pathname} />
           <button class="btn btn--light" type="submit">Subscribe</button>
         </form>
-        <small>No spam. Unsubscribe anytime.</small>
+        <p class="newsletter__status" role="status" aria-live="polite" hidden></p>
+        <small>We only use your email to send the Cult &amp; Crown letter. No spam, unsubscribe anytime.</small>
       </div>
     </div>
   </div>
 </section>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-newsletter]').forEach((form) => {
+    const status = form.parentElement?.querySelector<HTMLElement>('.newsletter__status');
+    const button = form.querySelector('button');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!status || !button) return;
+      button.disabled = true;
+      button.textContent = 'Sending…';
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: new FormData(form) });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.ok) {
+          form.hidden = true;
+          status.textContent = data.already ? "You're already on the list. Thank you!" : "You're in. See you in your inbox.";
+          status.dataset.state = 'ok';
+        } else {
+          status.textContent = data.error === 'invalid_email' ? 'Please check your email address.' : 'Something went wrong. Please try again later.';
+          status.dataset.state = 'error';
+        }
+      } catch {
+        status.textContent = 'Something went wrong. Please try again later.';
+        status.dataset.state = 'error';
+      }
+      status.hidden = false;
+      button.disabled = false;
+      button.textContent = 'Subscribe';
+    });
+  });
+</script>
 
 <style>
   .newsletter-wrap { padding-top: 0; }
@@ -42,6 +75,10 @@ const FORM_ACTION = '';
   }
   .newsletter__form input::placeholder { color: rgba(255,255,255,.6); }
   .newsletter__form input:focus { outline: none; border-color: var(--white); background: rgba(255,255,255,.16); }
+  .nl-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .newsletter__status { margin: 0 auto 16px; max-width: 520px; font-size: 17px; font-weight: 500; }
+  .newsletter__status[data-state='ok'] { margin-top: 32px; font-family: var(--serif); font-size: 26px; font-weight: 400; color: var(--white); }
+  .newsletter__status[data-state='error'] { color: #ffd2cc; }
   .newsletter small { font-size: 13px; color: rgba(255,255,255,.6); }
   @media (max-width: 640px) {
     .newsletter { padding: 64px 20px; }
