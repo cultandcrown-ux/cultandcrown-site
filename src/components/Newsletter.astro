@@ -18,7 +18,7 @@
           <button class="btn btn--light" type="submit">Subscribe</button>
         </form>
         <p class="newsletter__status" role="status" aria-live="polite" hidden></p>
-        <small>We only use your email to send the Cult &amp; Crown letter. No spam, unsubscribe anytime.</small>
+        <small>We only use your email to send the Cult &amp; Crown letter. No spam, unsubscribe anytime. <a href="/privacy/">Privacy policy</a></small>
       </div>
     </div>
   </div>
@@ -79,6 +79,7 @@
   .newsletter__status { margin: 0 auto 16px; max-width: 520px; font-size: 17px; font-weight: 500; }
   .newsletter__status[data-state='ok'] { margin-top: 32px; font-family: var(--serif); font-size: 26px; font-weight: 400; color: var(--white); }
   .newsletter__status[data-state='error'] { color: #ffd2cc; }
+  .newsletter small a { color: rgba(255,255,255,.85); text-decoration: underline; text-underline-offset: 2px; }
   .newsletter small { font-size: 13px; color: rgba(255,255,255,.6); }
   @media (max-width: 640px) {
     .newsletter { padding: 64px 20px; }
