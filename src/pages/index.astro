@@ -74,8 +74,7 @@ const counts = Object.fromEntries(Object.keys(CATEGORIES).map((k) => [k, all.fil
   <section class="section section--soft">
     <div class="wrap meet">
       <div class="meet__mark reveal">
-        <Dial class="meet__dial" />
-        <span class="meet__word">C<i>&amp;</i>C</span>
+        <img class="meet__logo" src="/logo-cult-and-crown-white.png" alt="Cult &amp; Crown logo: Where the screen tells time" width="449" height="96" loading="lazy" decoding="async" />
       </div>
       <div class="meet__body reveal">
         <span class="eyebrow">Meet Cult &amp; Crown</span>
@@ -225,7 +224,7 @@ const counts = Object.fromEntries(Object.keys(CATEGORIES).map((k) => [k, all.fil
   .meet__mark { position: relative; aspect-ratio: 1; border-radius: var(--r-xl); overflow: hidden; display: grid; place-items: center; color: var(--white);
     background: radial-gradient(120% 120% at 30% 20%, #0b6a76 0%, #004953 45%, #00222a 100%); box-shadow: var(--shadow); }
   :global(.meet__dial) { position: absolute; inset: 9%; width: 82%; height: 82%; color: rgba(255,255,255,.22); }
-  .meet__word { position: relative; font-family: var(--serif); font-size: clamp(72px, 10vw, 140px); line-height: 1; }
+  .meet__logo { position: relative; width: min(72%, 449px); height: auto; }
   .meet__body { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
   .meet__body h2 { font-size: clamp(36px, 4.4vw, 56px); }
   .meet__body p { color: var(--muted); font-size: 18px; }
