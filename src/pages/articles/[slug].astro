@@ -73,7 +73,7 @@ const jsonLd = [articleLd, breadcrumbLd(crumbs), ...(faqLd ? [faqLd] : [])];
         <nav class="crumbs" aria-label="Breadcrumb">
           <a href="/">Home</a><span aria-hidden="true">/</span><a href={`/category/${d.category}/`}>{cat.label}</a>
         </nav>
-        <h1>{d.title}</h1>
+        <h1>{d.title.replace(/(\w)-(\d)/g, "$1\u2011$2")}</h1>
         <p class="a-dek">{d.description}</p>
         <div class="a-meta">
           <span>By <a href="/about/">Cult &amp; Crown</a></span><span>·</span>
