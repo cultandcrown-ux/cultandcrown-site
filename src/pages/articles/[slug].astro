@@ -48,7 +48,7 @@ const articleLd = {
   publisher: { '@id': ORG_LD['@id'], '@type': 'Organization', name: SITE.name, logo: { '@type': 'ImageObject', url: ORG_LD.logo } },
   about: [
     ...(d.film ? [{ '@type': 'Movie', name: d.film, ...(d.year && /^\d{4}$/.test(d.year) ? { dateCreated: d.year } : {}) }] : []),
-    ...(d.watch ? [{ '@type': 'Product', name: d.watch }] : []),
+    ...(d.watch ? [{ '@type': 'Thing', name: d.watch, description: 'Wristwatch' }] : []),
   ],
 };
 const faqLd = d.faq.length
